@@ -25,7 +25,7 @@ def twitter_request(twitter_id):
         returns: Text for user to post as status update on twitter
     """
     # TODO: Make this work
-    # TODO lookup if user is a paid user, for now all useer accounts are free
+    # TODO lookup if user is a paid user, for now all useer accounts are free (All are free now)
     paid = False
     if paid:
         instructions = 'send a direct messages to @publickeykeeper with the following random number in it.'
@@ -44,6 +44,7 @@ def twitter_verify(twitter_id, username, paid=False):
     :return: True/False
     """
     # TODO: make this work
+    # TODO: This looks in useres timeline for the required verify text, When it is found users in marked verified.
     connection = twitter2(APP_KEY, access_token=ACCESS_TOKEN)
     if paid:
         msg = twitter.get_direct_messages(screen_name=username, count=1)
