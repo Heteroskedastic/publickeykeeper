@@ -7,6 +7,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 basedir = os.path.abspath(os.path.dirname(__file__))
 TEMPLATE_DIR = os.path.join(basedir, 'templates')
 STATIC_DIR = os.path.join(basedir, 'static')
+DATABASE = os.path.join(basedir, 'publickeykeeper.db')
 
 # TWITTER
 TWITTER_ACCESS_TOKEN = os.getenv('TWITTER_ACCESS_TOKEN', 'default_value')
