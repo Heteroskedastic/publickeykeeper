@@ -3,7 +3,7 @@ Reminder, we are trying not to keep secrets.
 Try to verify without keeping or knowing any secret.
 """
 
-from random import randint
+
 from twython import Twython
 
 import config
@@ -36,7 +36,7 @@ class TwitterVerify(VerifyCore):
         paid = False
         if paid:
             instructions = 'send a direct messages to @publickeykeeper with the following random number in it.'
-            verifymsg = randint(1000000, 10000000)
+            verifymsg = VERIFY.format(code)
         else:
             instructions = 'Post a status update on your twitter feed which includes exactly the following text'
             verifymsg = VERIFY.format(code)

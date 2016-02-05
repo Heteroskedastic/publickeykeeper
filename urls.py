@@ -18,12 +18,12 @@ def register_api_urls(app):
 
 
 def register_base_urls(app):
-    from base.views import VTest
+    from base.views import VVerify
     views_pages = Blueprint(
         'base',
         __name__,
         template_folder='templates',
         static_folder='static'
     )
-    views_pages.add_url_rule('/test/verify', view_func=VTest.as_view('views'), )
+    views_pages.add_url_rule('/test/verify', view_func=VVerify.as_view('views'), )
     app.register_blueprint(views_pages)

@@ -1,6 +1,7 @@
 import peewee
 
 from flask import Flask, g
+from flask.ext.mail import Mail
 
 from celery_app import make_celery
 from config import TEMPLATE_DIR, STATIC_DIR, DATABASE
@@ -15,6 +16,7 @@ register_api_urls(app)
 register_base_urls(app)
 
 celery = make_celery(app)
+mail = Mail(app)
 
 
 @app.before_request
@@ -48,4 +50,10 @@ def lookup():
 
 
 if __name__ == '__main__':
+    from db import User, PublicId, Key
+    for model in [User, PublicId, Key]:
+        try:
+            model.create_table()
+        except:
+            pass
     app.run()
