@@ -1,9 +1,6 @@
-from peewee import *
-import datetime
-import pandas as pd
+from peewee import Model, CharField, ForeignKeyField, Check
 
-DB = SqliteDatabase('publickeykeeper.db')
-
+from publickeykeeper import database
 """
 Secrets:
     Free:
@@ -17,33 +14,36 @@ public_id_types = ('Twitter', 'email')
 
 class BaseModel(Model):
     class Meta:
-        database = DB
-
-
-class Public_Id(BaseModel):
-    """
-    Id's such as email address, twitter id, .....
-    """
-    idtype = CharField(null=False)
-    userid = CharField(null=False)
-
-    class Meta:
-        constraints = [Check('idtype in public_id_types')]
-        indexes = ( (('idtype', 'userid'), True), )
+        database = database
 
 
 class User(BaseModel):
-    publicid = ForeignKeyField(Public_Id, related_name='user')
     firstname = CharField(null=True)
     lastname = CharField(null=True)
     about = CharField(null=True)
 
 
+class PublicId(BaseModel):
+    """
+    Id's such as email address, twitter id, .....
+    """
+    idtype = CharField(null=False)
+    account = CharField(null=False)
+    userid = ForeignKeyField(User, related_name='user')
+
+    class Meta:
+        # constraints = [Check('idtype in public_id_types')]
+        indexes = ((('idtype', 'account'), True), )
+
+
 class Key(BaseModel):
-    publicid = ForeignKeyField(Public_Id, related_name='key')
-    keytype = CharField(null=False) # As in what crypto tech was used
-    publickey = CharField(unique=True, null=False) # if it is not unique we what should we do?
+    publicid = ForeignKeyField(PublicId, related_name='key')
+    # As in what crypto tech was used. Now only RSA
+    keytype = CharField(null=False)
+    # if it is not unique we what should we do?
+    # TODO: Convert to DER or PEM
+    publickey = CharField(unique=True, null=False)
 
-
-
-
+    @staticmethod
+    def get_key(account, service):
+        return Key.select().join(PublicId).where(PublicId.account == account, PublicId.idtype == service).get()
