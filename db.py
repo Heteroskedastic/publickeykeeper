@@ -1,4 +1,4 @@
-from peewee import Model, CharField, ForeignKeyField, Check
+from peewee import Model, CharField, ForeignKeyField, BooleanField
 
 from publickeykeeper import database
 """
@@ -27,9 +27,16 @@ class PublicId(BaseModel):
     """
     Id's such as email address, twitter id, .....
     """
+    TWITTER = "twitter"
+
     idtype = CharField(null=False)
     account = CharField(null=False)
     userid = ForeignKeyField(User, related_name='user')
+    verifyed = BooleanField(default=False)
+
+    def accept_verify(self):
+        self.verifyed = True
+        self.save()
 
     class Meta:
         # constraints = [Check('idtype in public_id_types')]
