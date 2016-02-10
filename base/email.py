@@ -1,6 +1,6 @@
 from flask.ext.mail import Message
 
-from publickeykeeper import mail
+from base import mail
 
 
 def send_email(subject, recepients, body):

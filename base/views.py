@@ -4,15 +4,16 @@ from datetime import datetime
 from flask import request, render_template, Response
 from flask.views import MethodView
 
-from api.utils import json_serial
+from api.tasks import twitter_verify
+from base.models import PublicId
+from base.utils import json_serial, get_object_or_404
 from base.verifyid import VERIFY
 
 
 class VVerify(MethodView):
     @staticmethod
     def verify_service(service, code):
-        from db import PublicId
-        p = PublicId.get(idtype=service, code=code)
+        p = get_object_or_404(PublicId, PublicId.idtype == service, PublicId.code == code)
         if p.code_expored_date < datetime.now():
             p.refresh_code()
             p = p.update_obj()
@@ -31,8 +32,6 @@ class VVerify(MethodView):
 
     @staticmethod
     def post():
-        from api.tasks import twitter_verify
-        from db import PublicId
         username = request.form.get('username')
         service = request.form.get('service')
         p = PublicId.get(idtype=service, account=username).refresh_code()

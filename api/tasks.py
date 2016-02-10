@@ -1,7 +1,6 @@
-from publickeykeeper import celery
-
+from base.models import PublicId
 from base.verifyid import TwitterVerify
-from db import PublicId
+from base import celery
 
 
 @celery.task(bind=True, max_retries=15)

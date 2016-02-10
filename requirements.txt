@@ -1,7 +1,9 @@
+celery
 Flask
 Flask-Mail
-python >= 3.5
-peewee >= 2.7.4
-twython >= 3.3.0
-celery
+flask-migrate
+flask-sqlalchemy
 redis
+sqlalchemy
+sqlalchemy-utils
+twython >= 3.3.0

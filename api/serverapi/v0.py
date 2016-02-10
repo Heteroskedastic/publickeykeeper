@@ -3,7 +3,8 @@ import json
 from flask import Response, request
 from flask.views import MethodView
 
-from api.utils import json_serial
+from base.models import PublicId
+from base.utils import json_serial, get_object_or_404
 from .verify import get_verify_code
 
 
@@ -44,12 +45,11 @@ class VVerify(VApiCore):
 class VGetPubKey(VApiCore):
     @staticmethod
     def get():
-        from db import Key
         account, service = request.form.get('account'), request.form.get('service')
         if not account:
             account, service = request.json.get('account'), request.json.get('service')
-        key = Key.get_key(account, service)
-        return Response(json.dumps({"key": key.publickey}, default=json_serial), status=200, mimetype="application/json")
+        publicid = get_object_or_404(PublicId, PublicId.account == account, PublicId.idtype == service)
+        return Response(json.dumps({"key": publicid.key.first().publickey}, default=json_serial), status=200, mimetype="application/json")
 
     @staticmethod
     def post():
