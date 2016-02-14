@@ -3,14 +3,13 @@ import json
 from flask import Response, request
 from flask.views import MethodView
 
-from base.models import PublicId
+from base.models import PublicId, Message
 from base.utils import json_serial, get_object_or_404
 from .verify import get_verify_code
 
 
 class VApiCore(MethodView):
-    @staticmethod
-    def get():
+    def get(self):
         """
         initial method
         :return: json
@@ -18,8 +17,7 @@ class VApiCore(MethodView):
 
         return "api base view"
 
-    @staticmethod
-    def post():
+    def post(self):
         """
         initial method
         :return: json
@@ -28,8 +26,16 @@ class VApiCore(MethodView):
 
 
 class VVerify(VApiCore):
-    @staticmethod
-    def get():
+    def verify_email(self, key):
+        p = PublicId.query.filter_by(code=key).first()
+        if not p:
+            return Response(json.dumps({"status": "error", "message": "User doesn't exist"}), status=500, mimetype="application/json")
+        p.accept_verify()
+        return Response(json.dumps({"status": "ok", "message": "verify completed"}), status=200, mimetype="application/json")
+
+    def get(self):
+        if request.args.get('key'):
+            return self.verify_email(request.args.get('key'))
         return Response(json.dumps(get_verify_code(), default=json_serial), status=200, mimetype="application/json")
 
     @staticmethod
@@ -54,3 +60,17 @@ class VGetPubKey(VApiCore):
     @staticmethod
     def post():
         pass
+
+
+class VMessageEncrypt(VApiCore):
+    @staticmethod
+    def post():
+        msg = Message(request.form.get('message') or request.json.get('message'))
+        return Response(json.dumps({'message': msg.encrypt(), 'type': 'encrypt'}), mimetype='application/json')
+
+
+class VMessageDecrypt(VApiCore):
+    @staticmethod
+    def post():
+        msg = Message(request.form.get('message') or request.json.get('message'))
+        return Response(json.dumps({'message': msg.decrypt(), 'type': 'decrypt'}), mimetype='application/json')

@@ -91,10 +91,30 @@ class PublicId(db.Model):
 
 class Key(db.Model):
     __tablename__ = 'key'
+    RSA = 'rsa'
+    KEY_TYPES = [
+        (RSA, RSA)
+    ]
     id = db.Column(db.Integer, primary_key=True)
     publicid_id = db.Column(db.Integer, db.ForeignKey(PublicId.id), nullable=False)
     # As in what crypto tech was used. Now only RSA
-    keytype = db.Column(db.String(64), nullable=False)
+    keytype = db.Column(ChoiceType(KEY_TYPES), nullable=False,)
     # if it is not unique we what should we do?
     # TODO: Convert to DER or PEM
     publickey = db.Column(db.UnicodeText, unique=True, nullable=False)
+
+
+class Message(db.Model):
+    __abstract__ = True
+    message = None
+
+    def __init__(self, message):
+        self.message = message
+
+    def encrypt(self):
+        # dummy
+        return self.message
+
+    def decrypt(self):
+        # dummy
+        return self.message

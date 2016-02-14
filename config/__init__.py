@@ -7,7 +7,6 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 basedir = os.path.abspath(os.path.dirname(__file__))
 TEMPLATE_DIR = os.path.join(basedir, 'templates')
 STATIC_DIR = os.path.join(basedir, 'static')
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'publickeykeeper.db')
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'migrations')
 
 # TWITTER

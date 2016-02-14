@@ -3,6 +3,7 @@ Flask
 Flask-Mail
 flask-migrate
 flask-sqlalchemy
+flask-testing
 redis
 sqlalchemy
 sqlalchemy-utils
